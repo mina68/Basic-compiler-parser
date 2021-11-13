@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Compiler</title>
+	<style type="text/css">
+		textarea{
+			width: 95%;
+			height: 200px;
+			padding: 20px;
+			font-size: 20px;
+			margin: 10px
+		}
+		button{
+			margin: 10px;
+			padding: 10px;
+		}
+	</style>
+</head>
+<body>
+	<textarea id="code_area" placeholder="Type Your Code"></textarea>
+	<button id="run">Run</button>
+	<script type="text/javascript">
+		
+		const tokenTypes = [
+		    { regex: /^\s+/, tokenType: 'WHITESPACE' },
+		    { regex: /^[{}\(\)\[\];,\|&]/, tokenType: 'SPECIAL_CHAR' },
+		    { regex: /^[\+*%=\/-]/, tokenType: 'OPERATOR' },
+		    { regex: /^-?\d+(?:\.\d+)?/, tokenType: 'NUMBER' },
+		    { regex: /^"(?:\\.|[^"])*"/, tokenType: 'STRING'},
+		    { regex: /^true|false/, tokenType: 'BOOLEAN' },
+		    { regex: /^var|if|for|while|do|switch|case|return/, tokenType: 'KEYWORD' },
+		    { regex: /^[_a-zA-Z][_a-zA-Z0-9]*/, tokenType: 'IDENTIFIER' },
+		];
+
+		let button = document.getElementById('run');
+		let textarea = document.getElementById('code_area');
+		button.addEventListener('click', function(){
+		    let input = textarea.value;
+		    console.log(getTokens(input))
+		});
+
+		function getTokens(input)
+		{
+		    var tokens = [];
+		    var foundToken;
+		    do {
+		        foundToken = false;
+		        for (var i = 0; i < tokenTypes.length; i++) {
+		            let match = tokenTypes[i].regex.exec(input);
+		            if (match) {
+		                tokens.push({ type: tokenTypes[i].tokenType, value: match[0] });
+		                input = input.substring(match[0].length);
+		                foundToken = true;
+		                break;
+		            } 
+		        }
+		    } while (input.length > 0 && foundToken);
+
+		    return tokens;
+		}
+
+	</script>
+</body>
+</html>
